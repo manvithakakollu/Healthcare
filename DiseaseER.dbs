@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="PostgreSQL" id="PostgreSQL-1eca" database="PostgreSQL" >
+	<schema name="public" >
+		<comment><![CDATA[standard public schema]]></comment>
+		<table name="disease" spec="" >
+			<column name="disease_id" type="serial" length="32" jt="4" mandatory="y" />
+			<column name="disease_name" type="varchar" length="255" jt="12" />
+			<column name="intensity_level_qty" type="integer" length="32" jt="4" />
+			<column name="disease_type_cd" type="char" length="10" jt="1" />
+			<index name="disease_pkey" unique="PRIMARY_KEY" >
+				<column name="disease_id" />
+			</index>
+			<fk name="disease_disease_type_cd_fkey" to_schema="public" to_table="disease_type" >
+				<fk_column name="disease_type_cd" pk="disease_type_code" />
+			</fk>
+		</table>
+		<table name="disease_type" spec="" >
+			<column name="disease_type_code" type="char" length="5" jt="1" mandatory="y" />
+			<column name="disease_type_description" type="varchar" length="1000" jt="12" />
+			<index name="disease_type_pkey" unique="PRIMARY_KEY" >
+				<column name="disease_type_code" />
+			</index>
+		</table>
+		<table name="diseased_patient" spec="" >
+			<column name="person_id" type="integer" length="32" jt="4" mandatory="y" />
+			<column name="disease_id" type="integer" length="32" jt="4" mandatory="y" />
+			<column name="severity_value" type="integer" length="32" jt="4" />
+			<column name="start_date" type="date" length="0" jt="91" />
+			<column name="end_date" type="date" length="0" jt="91" />
+			<index name="diseased_patient_pkey" unique="PRIMARY_KEY" >
+				<column name="person_id" />
+				<column name="disease_id" />
+			</index>
+			<fk name="diseased_patient_person_id_fkey" to_schema="public" to_table="person" >
+				<fk_column name="person_id" pk="person_id" />
+			</fk>
+			<fk name="diseased_patient_disease_id_fkey" to_schema="public" to_table="disease" >
+				<fk_column name="disease_id" pk="disease_id" />
+			</fk>
+		</table>
+		<table name="indication" spec="" >
+			<column name="medicine_id" type="integer" length="32" jt="4" mandatory="y" />
+			<column name="disease_id" type="integer" length="32" jt="4" mandatory="y" />
+			<column name="effectiveness_percent" type="double precision" jt="3" />
+			<index name="indication_pkey" unique="PRIMARY_KEY" >
+				<column name="medicine_id" />
+				<column name="disease_id" />
+			</index>
+			<fk name="indication_medicine_id_fkey" to_schema="public" to_table="medicine" >
+				<fk_column name="medicine_id" pk="medicine_id" />
+			</fk>
+			<fk name="indication_disease_id_fkey" to_schema="public" to_table="disease" >
+				<fk_column name="disease_id" pk="disease_id" />
+			</fk>
+		</table>
+		<table name="insurance" spec="" >
+			<column name="insurance_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="company_name" type="varchar" length="255" jt="12" />
+			<column name="address" type="varchar" length="255" jt="12" />
+			<column name="contact_details" type="varchar" length="255" jt="12" />
+			<index name="insurance_pkey" unique="PRIMARY_KEY" >
+				<column name="insurance_id" />
+			</index>
+		</table>
+		<table name="location" spec="" >
+			<column name="location_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="city_name" type="varchar" length="100" jt="12" />
+			<column name="state_province_name" type="varchar" length="100" jt="12" />
+			<column name="country_name" type="varchar" length="100" jt="12" />
+			<column name="developing_flag" type="char" length="1" jt="1" />
+			<column name="wealth_rank_number" type="integer" length="32" jt="4" />
+			<index name="location_pkey" unique="PRIMARY_KEY" >
+				<column name="location_id" />
+			</index>
+		</table>
+		<table name="medicine" spec="" >
+			<column name="medicine_id" type="serial" length="32" jt="4" mandatory="y" />
+			<column name="standard_industry_num" type="varchar" length="25" jt="12" />
+			<column name="medicine_name" type="varchar" length="250" jt="12" />
+			<column name="company" type="varchar" length="150" jt="12" />
+			<column name="active_ingredient_name" type="varchar" length="150" jt="12" />
+			<index name="medicine_pkey" unique="PRIMARY_KEY" >
+				<column name="medicine_id" />
+			</index>
+		</table>
+		<table name="person" spec="" >
+			<column name="person_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="last_name" type="varchar" length="50" jt="12" />
+			<column name="first_name" type="varchar" length="100" jt="12" />
+			<column name="gender" type="char" length="1" jt="1" />
+			<column name="date_of_birth" type="date" length="0" jt="91" />
+			<column name="primary_location_id" type="integer" length="32" jt="4" />
+			<column name="race_cd" type="char" length="5" jt="1" />
+			<column name="insurance_id" type="integer" length="32" jt="4" />
+			<index name="person_pkey" unique="PRIMARY_KEY" >
+				<column name="person_id" />
+			</index>
+			<fk name="fkey_primary_location_id" to_schema="public" to_table="location" >
+				<fk_column name="primary_location_id" pk="location_id" />
+			</fk>
+			<fk name="fkey_race_cd" to_schema="public" to_table="race" >
+				<fk_column name="race_cd" pk="race_code" />
+			</fk>
+			<fk name="fkey_insurance_id" to_schema="public" to_table="insurance" >
+				<fk_column name="insurance_id" pk="insurance_id" />
+			</fk>
+		</table>
+		<table name="race" spec="" >
+			<column name="race_code" type="char" length="5" jt="1" mandatory="y" />
+			<column name="race_description" type="varchar" length="100" jt="12" />
+			<index name="race_pkey" unique="PRIMARY_KEY" >
+				<column name="race_code" />
+			</index>
+		</table>
+		<table name="race_disease_propensity" spec="" >
+			<column name="race_code" type="char" length="5" jt="1" mandatory="y" />
+			<column name="disease_id" type="integer" length="32" jt="4" mandatory="y" />
+			<column name="propensity_value" type="integer" length="32" jt="4" />
+			<index name="race_disease_propensity_pkey" unique="PRIMARY_KEY" >
+				<column name="race_code" />
+				<column name="disease_id" />
+			</index>
+			<fk name="race_disease_propensity_race_code_fkey" to_schema="public" to_table="race" >
+				<fk_column name="race_code" pk="race_code" />
+			</fk>
+			<fk name="race_disease_propensity_disease_id_fkey" to_schema="public" to_table="disease" >
+				<fk_column name="disease_id" pk="disease_id" />
+			</fk>
+		</table>
+		<sequence name="disease_disease_id_seq" options="AS integer START WITH 1 INCREMENT BY 1" />
+		<sequence name="medicine_medicine_id_seq" options="AS integer START WITH 1 INCREMENT BY 1" />
+	</schema>
+	<schema name="snowflake" >
+		<table name="disease_dim" spec="" >
+			<column name="disease_dim_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="disease_id" type="integer" length="32" jt="4" mandatory="y" />
+			<column name="disease_name" type="varchar" length="100" jt="12" />
+			<column name="disease_type_cd" type="char" length="5" jt="1" />
+			<index name="disease_dim_pkey" unique="PRIMARY_KEY" >
+				<column name="disease_dim_id" />
+			</index>
+			<index name="disease_dim_disease_id_key" unique="UNIQUE_KEY" >
+				<column name="disease_id" />
+			</index>
+			<fk name="disease_type_fkey" to_schema="snowflake" to_table="disease_type_dim" update_action="cascade" options="" >
+				<fk_column name="disease_type_cd" pk="disease_type_code" />
+			</fk>
+		</table>
+		<table name="disease_fact" spec="" >
+			<column name="person_dim_id" type="integer" length="32" jt="4" />
+			<column name="disease_dim_id" type="integer" length="32" jt="4" />
+			<column name="medicine_dim_id" type="integer" length="32" jt="4" />
+			<column name="disease_start_date" type="date" length="0" jt="91" />
+			<column name="disease_end_date" type="date" length="0" jt="91" />
+			<column name="patient_date_of_birth" type="date" length="0" jt="91" />
+			<column name="patient_disease_severity_value" type="integer" length="32" jt="4" />
+			<column name="disease_intensity_level_qty" type="integer" length="32" jt="4" />
+			<column name="medicine_effectiveness_percentage" type="double precision" jt="3" />
+			<column name="country_wealth_number" type="integer" length="32" jt="4" />
+			<fk name="disease_dim_id_fkey" to_schema="snowflake" to_table="disease_dim" update_action="cascade" options="" >
+				<fk_column name="disease_dim_id" pk="disease_dim_id" />
+			</fk>
+			<fk name="medicine_dim_id_fkey" to_schema="snowflake" to_table="medicine_dim" update_action="cascade" options="" >
+				<fk_column name="medicine_dim_id" pk="medicine_dim_id" />
+			</fk>
+			<fk name="person_dim_id_fkey" to_schema="snowflake" to_table="person_dim" update_action="cascade" options="" >
+				<fk_column name="person_dim_id" pk="person_dim_id" />
+			</fk>
+		</table>
+		<table name="disease_type_dim" spec="" >
+			<column name="disease_code_dim_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="disease_type_code" type="char" length="5" jt="1" mandatory="y" />
+			<column name="disease_type_description" type="varchar" length="500" jt="12" />
+			<index name="disease_type_dim_pkey" unique="PRIMARY_KEY" >
+				<column name="disease_code_dim_id" />
+			</index>
+			<index name="disease_type_dim_disease_type_code_key" unique="UNIQUE_KEY" >
+				<column name="disease_type_code" />
+			</index>
+		</table>
+		<table name="location_dim" spec="" >
+			<column name="location_dim_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="location_id" type="integer" length="32" jt="4" mandatory="y" />
+			<column name="city_name" type="varchar" length="100" jt="12" />
+			<column name="state_province_name" type="varchar" length="100" jt="12" />
+			<column name="country_name" type="varchar" length="100" jt="12" />
+			<column name="developing_flag" type="char" length="1" jt="1" />
+			<index name="location_dim_pkey" unique="PRIMARY_KEY" >
+				<column name="location_dim_id" />
+			</index>
+			<index name="location_dim_location_id_key" unique="UNIQUE_KEY" >
+				<column name="location_id" />
+			</index>
+		</table>
+		<table name="medicine_company_dim" spec="" >
+			<column name="company_dim_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="company_name" type="varchar" length="200" jt="12" mandatory="y" />
+			<column name="address" type="varchar" length="250" jt="12" />
+			<column name="contact_number" type="varchar" length="30" jt="12" />
+			<index name="medicine_company_dim_pkey" unique="PRIMARY_KEY" >
+				<column name="company_dim_id" />
+			</index>
+			<index name="medicine_company_dim_company_name_key" unique="UNIQUE_KEY" >
+				<column name="company_name" />
+			</index>
+		</table>
+		<table name="medicine_dim" spec="" >
+			<column name="medicine_dim_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="medicine_id" type="integer" length="32" jt="4" mandatory="y" />
+			<column name="standard_industry_num" type="varchar" length="30" jt="12" />
+			<column name="medicine_name" type="varchar" length="200" jt="12" />
+			<column name="company" type="varchar" length="150" jt="12" />
+			<column name="active_ingredient_name" type="varchar" length="200" jt="12" />
+			<index name="medicine_dim_pkey" unique="PRIMARY_KEY" >
+				<column name="medicine_dim_id" />
+			</index>
+			<index name="medicine_dim_medicine_id_key" unique="UNIQUE_KEY" >
+				<column name="medicine_id" />
+			</index>
+			<fk name="company_name_fkey" to_schema="snowflake" to_table="medicine_company_dim" options="" >
+				<fk_column name="company" pk="company_name" />
+			</fk>
+			<fk name="medicine_id_fkey" to_schema="snowflake" to_table="medicine_disease_dim" options="" >
+				<fk_column name="medicine_id" pk="medicine_dim_id" />
+			</fk>
+		</table>
+		<table name="medicine_disease_dim" spec="" >
+			<column name="medicine_dim_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="medicine_id" type="integer" length="32" jt="4" />
+			<column name="disease_id" type="integer" length="32" jt="4" />
+			<index name="medicine_disease_dim_pkey" unique="PRIMARY_KEY" >
+				<column name="medicine_dim_id" />
+			</index>
+		</table>
+		<table name="person_dim" spec="" >
+			<column name="person_dim_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="person_id" type="integer" length="32" jt="4" mandatory="y" />
+			<column name="last_name" type="varchar" length="50" jt="12" />
+			<column name="first_name" type="varchar" length="100" jt="12" />
+			<column name="gender" type="char" length="1" jt="1" />
+			<column name="primary_location_id" type="integer" length="32" jt="4" />
+			<column name="race_cd" type="char" length="5" jt="1" />
+			<column name="disease_id" type="integer" length="32" jt="4" />
+			<index name="person_dim_pkey" unique="PRIMARY_KEY" >
+				<column name="person_dim_id" />
+			</index>
+			<fk name="disease_race_fkey" to_schema="snowflake" to_table="race_disease_propensity_dim" update_action="cascade" options="" >
+				<fk_column name="disease_id" pk="race_disease_dim_id" />
+			</fk>
+			<fk name="location_type_fkey" to_schema="snowflake" to_table="location_dim" update_action="cascade" options="" >
+				<fk_column name="primary_location_id" pk="location_id" />
+			</fk>
+			<fk name="race_cd_fkey" to_schema="snowflake" to_table="race_dim" update_action="cascade" options="" >
+				<fk_column name="race_cd" pk="race_code" />
+			</fk>
+		</table>
+		<table name="race_dim" spec="" >
+			<column name="race_code_dim_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="race_code" type="char" length="5" jt="1" mandatory="y" />
+			<column name="race_description" type="varchar" length="500" jt="12" />
+			<index name="race_dim_pkey" unique="PRIMARY_KEY" >
+				<column name="race_code_dim_id" />
+			</index>
+			<index name="race_dim_race_code_key" unique="UNIQUE_KEY" >
+				<column name="race_code" />
+			</index>
+		</table>
+		<table name="race_disease_propensity_dim" spec="" >
+			<column name="race_disease_dim_id" type="integer" length="32" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED  ALWAYS AS IDENTITY]]></identity>
+			</column>
+			<column name="race_code" type="varchar" length="5" jt="12" />
+			<column name="disease_id" type="integer" length="32" jt="4" mandatory="y" />
+			<column name="propensity_value" type="integer" length="32" jt="4" />
+			<index name="race_disease_propensity_dim_pkey" unique="PRIMARY_KEY" >
+				<column name="race_disease_dim_id" />
+			</index>
+		</table>
+	</schema>
+	<layout name="Main Layout" id="Layout-1063" show_relation="columns" >
+		<comment><![CDATA[Main Layout]]></comment>
+		<entity schema="public" name="disease" color="3986C1" x="51" y="272" />
+		<entity schema="snowflake" name="disease_dim" color="3986C1" x="255" y="136" />
+		<entity schema="snowflake" name="disease_fact" color="3986C1" x="476" y="136" />
+		<entity schema="public" name="disease_type" color="3986C1" x="51" y="714" />
+		<entity schema="snowflake" name="disease_type_dim" color="3986C1" x="816" y="136" />
+		<entity schema="public" name="diseased_patient" color="E4BEF4" x="663" y="663" />
+		<entity schema="public" name="indication" color="3986C1" x="136" y="510" />
+		<entity schema="public" name="insurance" color="E4BEF4" x="833" y="289" />
+		<entity schema="public" name="location" color="E4BEF4" x="816" y="476" />
+		<entity schema="snowflake" name="location_dim" color="3986C1" x="1088" y="136" />
+		<entity schema="public" name="medicine" color="3986C1" x="272" y="289" />
+		<entity schema="snowflake" name="medicine_company_dim" color="3986C1" x="663" y="476" />
+		<entity schema="snowflake" name="medicine_dim" color="3986C1" x="901" y="476" />
+		<entity schema="snowflake" name="medicine_disease_dim" color="3986C1" x="1173" y="476" />
+		<entity schema="public" name="person" color="E4BEF4" x="578" y="255" />
+		<entity schema="snowflake" name="person_dim" color="3986C1" x="663" y="476" />
+		<entity schema="public" name="race" color="BED3F4" x="357" y="714" />
+		<entity schema="snowflake" name="race_dim" color="3986C1" x="901" y="476" />
+		<entity schema="public" name="race_disease_propensity" color="3986C1" x="408" y="510" />
+		<entity schema="snowflake" name="race_disease_propensity_dim" color="3986C1" x="1139" y="476" />
+		<callout x="680" y="51" pointer="Round" >
+			<comment><![CDATA[This is a layout. Create new tables by right-clicking the layout. 
+
+Edit tables by double-clicking the table header.]]></comment>
+		</callout>
+	</layout>
+	<layout name="Snowflake" id="Layout-11a9" show_relation="columns" >
+		<comment><![CDATA[Snowflake]]></comment>
+		<entity schema="snowflake" name="disease_dim" color="3986C1" x="595" y="612" />
+		<entity schema="snowflake" name="disease_fact" color="3986C1" x="527" y="51" />
+		<entity schema="snowflake" name="disease_type_dim" color="3986C1" x="918" y="595" />
+		<entity schema="snowflake" name="location_dim" color="3986C1" x="289" y="578" />
+		<entity schema="snowflake" name="medicine_company_dim" color="C1394C" x="986" y="425" />
+		<entity schema="snowflake" name="medicine_dim" color="C1394C" x="680" y="357" />
+		<entity schema="snowflake" name="medicine_disease_dim" color="C1394C" x="918" y="136" />
+		<entity schema="snowflake" name="person_dim" color="3986C1" x="340" y="272" />
+		<entity schema="snowflake" name="race_dim" color="3986C1" x="51" y="391" />
+		<entity schema="snowflake" name="race_disease_propensity_dim" color="3986C1" x="68" y="119" />
+	</layout>
+</project>
