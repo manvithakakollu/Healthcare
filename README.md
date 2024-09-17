@@ -1,11 +1,11 @@
 TOOLS USED :
-
 PostgreSQL
 DB Schema
 PowerBI
 Lucid Chart
-SKILLS LEARNT :
 
+
+SKILLS LEARNT :
 Data Modelling
 Data Modelling
 Server Side Code
